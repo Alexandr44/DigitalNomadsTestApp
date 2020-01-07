@@ -5,9 +5,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class AppModule(app : App) {
-
-    lateinit var app : App
+class AppModule(val app : App) {
 
     @Provides
     fun app() = this.app

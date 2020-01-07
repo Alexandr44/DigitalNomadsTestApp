@@ -2,16 +2,19 @@ package com.alex44.digitalnomadstestapp.di
 
 import com.alex44.digitalnomadstestapp.di.modules.AppModule
 import com.alex44.digitalnomadstestapp.di.modules.CiceroneModule
+import com.alex44.digitalnomadstestapp.di.modules.RepoModule
 import com.alex44.digitalnomadstestapp.presenter.MainPresenter
+import com.alex44.digitalnomadstestapp.presenter.NewsPresenter
 import com.alex44.digitalnomadstestapp.ui.activities.MainActivity
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AppModule::class, CiceroneModule::class])
+@Component(modules = [AppModule::class, CiceroneModule::class, RepoModule::class])
 interface AppComponent {
 
     fun inject(mainPresenter: MainPresenter)
-    fun inject(mainPresenter: MainActivity)
+    fun inject(mainActivity: MainActivity)
+    fun inject(newsPresenter: NewsPresenter)
 
 }
