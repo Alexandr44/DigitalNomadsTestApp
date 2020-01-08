@@ -8,7 +8,7 @@ data class NewsArticleDTO(
     @Expose @SerializedName("author") val author : String?,
     @Expose @SerializedName("title") val title : String?,
     @Expose @SerializedName("description") val description : String?,
-    @Expose @SerializedName("url") val newsUrl : String?,
+    @Expose @SerializedName("url") val newsUrl : String,
     @Expose @SerializedName("urlToImage") val imageUrl : String?,
     @Expose @SerializedName("publishedAt") val publishedAt : String?,
     @Expose @SerializedName("content") val content : String?
