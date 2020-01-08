@@ -1,6 +1,8 @@
 package com.alex44.digitalnomadstestapp.presenter
 
+import com.alex44.digitalnomadstestapp.model.dto.NewsArticleDTO
 import com.alex44.digitalnomadstestapp.model.repo.INewsRepo
+import com.alex44.digitalnomadstestapp.ui.adapters.NewsRVAdapter
 import com.alex44.digitalnomadstestapp.view.NewsView
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -17,6 +19,8 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
 
     var disposable : Disposable? = null
 
+    var data : MutableList<NewsArticleDTO> = ArrayList()
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         init()
@@ -31,23 +35,34 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
         disposable = repo.getNews(1)
             .observeOn(mainThreadScheduler)
             .subscribe({response ->
-                Timber.d("Message: "+response.status)
-                viewState.showMessage("DONE:"+response.status)
+                response.articles?.let {
+                    data.addAll(it)
+                    viewState.updateRV()
+                }
             },
-                {t ->
-                    t.message?.let {
-                        viewState.showMessage(it)
-                        Timber.d(it)
-                    } ?: run{
-                        viewState.showMessage("ERROR")
-                    }
-                })
+            {t ->
+                t.message?.let {
+                    viewState.showMessage(it)
+                    Timber.e(it)
+                } ?: run{
+                    viewState.showMessage("ERROR")
+                }
+            })
     }
 
     override fun onDestroy() {
         super.onDestroy()
         disposable?.let {
             if (!it.isDisposed) it.dispose()
+        }
+    }
+
+    fun bind(holder: NewsRVAdapter.ViewHolder) {
+        with(data.get(holder.getPos())) {
+            holder.setTitle(title?:"")
+            holder.setDesc(description?:"")
+            holder.setDate(publishedAt?:"")
+            holder.setImage(imageUrl?:"")
         }
     }
 
