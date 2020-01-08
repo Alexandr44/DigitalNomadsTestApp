@@ -13,4 +13,6 @@ interface NewsView : MvpView {
 
     fun updateRV()
 
+    fun goToUrl(newsUrl: String)
+
 }

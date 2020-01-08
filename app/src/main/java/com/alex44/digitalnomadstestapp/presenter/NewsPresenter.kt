@@ -81,4 +81,10 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
         }
     }
 
+    fun clicked(position: Int) {
+        if (position > data.size) return
+        val item = data[position]
+        viewState.goToUrl(item.newsUrl)
+    }
+
 }

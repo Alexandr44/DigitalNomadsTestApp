@@ -14,7 +14,7 @@ import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 import javax.inject.Named
 
-class NewsRVAdapter(val presenter : NewsPresenter) : RecyclerView.Adapter<NewsRVAdapter.ViewHolder>() {
+class NewsRVAdapter(val presenter: NewsPresenter) : RecyclerView.Adapter<NewsRVAdapter.ViewHolder>() {
 
     @Inject
     lateinit var router: Router
@@ -31,6 +31,7 @@ class NewsRVAdapter(val presenter : NewsPresenter) : RecyclerView.Adapter<NewsRV
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.position = position
         presenter.bind(holder)
+        holder.itemView.setOnClickListener { presenter.clicked(position) }
     }
 
     override fun getItemCount(): Int = presenter.data.size

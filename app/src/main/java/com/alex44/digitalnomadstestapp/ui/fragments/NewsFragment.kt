@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alex44.digitalnomadstestapp.App
 import com.alex44.digitalnomadstestapp.R
+import com.alex44.digitalnomadstestapp.common.navigation.Screens
 import com.alex44.digitalnomadstestapp.presenter.NewsPresenter
 import com.alex44.digitalnomadstestapp.ui.adapters.NewsRVAdapter
 import com.alex44.digitalnomadstestapp.view.NewsView
@@ -17,11 +18,16 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_news.*
+import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
 class NewsFragment : MvpAppCompatFragment(), NewsView {
 
     @InjectPresenter
     lateinit var presenter: NewsPresenter
+
+    @Inject
+    lateinit var router: Router
 
     var adapter : NewsRVAdapter? = null
 
@@ -33,6 +39,7 @@ class NewsFragment : MvpAppCompatFragment(), NewsView {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        App.instance.appComponent.inject(this)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_news, container, false)
     }
@@ -68,6 +75,10 @@ class NewsFragment : MvpAppCompatFragment(), NewsView {
 
     override fun updateRV() {
         adapter?.notifyDataSetChanged()
+    }
+
+    override fun goToUrl(newsUrl: String) {
+        router.newRootScreen(Screens.UrlScreen(newsUrl))
     }
 
 }

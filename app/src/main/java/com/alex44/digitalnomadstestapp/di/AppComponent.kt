@@ -8,6 +8,8 @@ import com.alex44.digitalnomadstestapp.presenter.MainPresenter
 import com.alex44.digitalnomadstestapp.presenter.NewsPresenter
 import com.alex44.digitalnomadstestapp.ui.activities.MainActivity
 import com.alex44.digitalnomadstestapp.ui.adapters.NewsRVAdapter
+import com.alex44.digitalnomadstestapp.ui.fragments.NewsFragment
+import com.alex44.digitalnomadstestapp.ui.fragments.UrlFragment
 import dagger.Component
 import javax.inject.Singleton
 
@@ -19,5 +21,7 @@ interface AppComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(newsPresenter: NewsPresenter)
     fun inject(adapter: NewsRVAdapter)
+    fun inject(newsFragment: NewsFragment)
+    fun inject(urlFragment: UrlFragment)
 
 }
