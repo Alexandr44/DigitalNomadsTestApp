@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.alex44.digitalnomadstestapp.App
 import com.alex44.digitalnomadstestapp.R
 import com.alex44.digitalnomadstestapp.common.navigation.Screens
+import com.alex44.digitalnomadstestapp.common.ui.BackButtonListener
 import com.alex44.digitalnomadstestapp.presenter.MainPresenter
 import com.alex44.digitalnomadstestapp.view.MainView
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -60,7 +61,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     }
 
     override fun goToNews() {
-        router.newRootScreen(Screens.NewsScreen)
+        router.newRootScreen(Screens.NewsScreen())
     }
 
     override fun onResumeFragments() {
@@ -74,12 +75,17 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     }
 
     override fun onBackPressed() {
-        alert {
-            title = "Выход"
-            message = "Вы действительно хотите выйти?"
-            positiveButton("Да") {router.exit()}
-            negativeButton("Нет") {it.dismiss()}
+        val fragment = supportFragmentManager.findFragmentById(R.id.main_frame_layout)
+        if (fragment is BackButtonListener && (fragment as BackButtonListener).backClick()) {
+            return
+        } else {
+            alert {
+                title = "Выход"
+                message = "Вы действительно хотите выйти?"
+                positiveButton("Да") {router.exit()}
+                negativeButton("Нет") {it.dismiss()}
 
-        }.show()
+            }.show()
+        }
     }
 }
