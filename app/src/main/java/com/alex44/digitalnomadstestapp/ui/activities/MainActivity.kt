@@ -11,6 +11,7 @@ import com.alex44.digitalnomadstestapp.view.MainView
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import org.jetbrains.anko.alert
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
@@ -70,5 +71,15 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     override fun onPause() {
         super.onPause()
         navigatorHolder.removeNavigator()
+    }
+
+    override fun onBackPressed() {
+        alert {
+            title = "Выход"
+            message = "Вы действительно хотите выйти?"
+            positiveButton("Да") {router.exit()}
+            negativeButton("Нет") {it.dismiss()}
+
+        }.show()
     }
 }
