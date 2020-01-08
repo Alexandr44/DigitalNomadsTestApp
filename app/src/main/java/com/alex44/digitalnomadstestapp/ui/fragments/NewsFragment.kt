@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.alex44.digitalnomadstestapp.App
 import com.alex44.digitalnomadstestapp.R
 import com.alex44.digitalnomadstestapp.presenter.NewsPresenter
@@ -52,6 +53,17 @@ class NewsFragment : MvpAppCompatFragment(), NewsView {
         App.instance.appComponent.inject(adapter as NewsRVAdapter)
         news_rv.layoutManager = LinearLayoutManager(context)
         news_rv.adapter = adapter
+        news_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val lastPos = linearLayoutManager.findLastVisibleItemPosition()
+                val count = recyclerView.adapter?.itemCount
+                if (lastPos == count?.minus(1)) {
+                    presenter.loadMore()
+                }
+            }
+        })
     }
 
     override fun updateRV() {

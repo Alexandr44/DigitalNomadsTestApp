@@ -14,6 +14,12 @@ import javax.inject.Inject
 @InjectViewState
 class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<NewsView>() {
 
+    companion object {
+        const val MAX_PAGE = 5
+    }
+
+    var curPage = 1
+
     @Inject
     lateinit var repo : INewsRepo
 
@@ -32,7 +38,7 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
     }
 
     private fun loadData() {
-        disposable = repo.getNews(1)
+        disposable = repo.getNews(curPage)
             .observeOn(mainThreadScheduler)
             .subscribe({response ->
                 response.articles?.let {
@@ -63,6 +69,15 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
             holder.setDesc(description?:"")
             holder.setDate(publishedAt?:"")
             holder.setImage(imageUrl?:"")
+        }
+    }
+
+    fun loadMore() {
+        if (curPage < MAX_PAGE) {
+            if (disposable?.isDisposed!!) {
+                curPage++
+                loadData()
+            }
         }
     }
 
