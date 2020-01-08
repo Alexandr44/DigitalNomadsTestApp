@@ -1,6 +1,7 @@
 package com.alex44.digitalnomadstestapp
 
 import android.app.Application
+import com.alex44.digitalnomadstestapp.common.model.db.DatabaseRoom
 import com.alex44.digitalnomadstestapp.di.AppComponent
 import com.alex44.digitalnomadstestapp.di.DaggerAppComponent
 import com.alex44.digitalnomadstestapp.di.modules.AppModule
@@ -21,5 +22,6 @@ class App : Application() {
         appComponent = DaggerAppComponent.builder()
             .appModule(AppModule(this))
             .build()
+        DatabaseRoom.create(applicationContext)
     }
 }
