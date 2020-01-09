@@ -1,8 +1,11 @@
 package com.alex44.digitalnomadstestapp.presenter
 
+import com.alex44.digitalnomadstestapp.common.model.exception.OfflineException
 import com.alex44.digitalnomadstestapp.model.dto.NewsArticleDTO
+import com.alex44.digitalnomadstestapp.model.enums.NewsType
 import com.alex44.digitalnomadstestapp.model.repo.INewsRepo
-import com.alex44.digitalnomadstestapp.ui.adapters.NewsRVAdapter
+import com.alex44.digitalnomadstestapp.view.NewsRvItemErrorView
+import com.alex44.digitalnomadstestapp.view.NewsRvItemView
 import com.alex44.digitalnomadstestapp.view.NewsView
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -25,6 +28,8 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
 
     var disposable : Disposable? = null
 
+    var loadError = false
+
     var data : MutableList<NewsArticleDTO> = ArrayList()
 
     override fun onFirstViewAttach() {
@@ -44,6 +49,7 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
                 response.articles?.let {
                     data.addAll(it)
                     viewState.updateRV()
+                    curPage++
                 }
             },
             {t ->
@@ -52,6 +58,12 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
                     Timber.e(it)
                 } ?: run{
                     viewState.showMessage("ERROR")
+                }
+                if (t is OfflineException) {
+                    loadError = true
+                    val info = NewsArticleDTO(title = t.message, newsType = NewsType.ERROR)
+                    data.add(info)
+                    viewState.updateRV()
                 }
             })
     }
@@ -63,8 +75,8 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
         }
     }
 
-    fun bind(holder: NewsRVAdapter.ViewHolder) {
-        with(data.get(holder.getPos())) {
+    fun bind(holder: NewsRvItemView) {
+        with(data[holder.getPos()!!]) {
             holder.setTitle(title?:"")
             holder.setDesc(description?:"")
             holder.setDate(publishedAt?:"")
@@ -72,19 +84,29 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
         }
     }
 
+    fun bind(holder: NewsRvItemErrorView) {
+        holder.setMessage(data.find {article ->
+            article.newsType == NewsType.ERROR
+        }?.title?:"")
+    }
+
     fun loadMore() {
-        if (curPage < MAX_PAGE) {
-            if (disposable?.isDisposed!!) {
-                curPage++
-                loadData()
-            }
-        }
+        if (loadError) return
+        if (curPage >= MAX_PAGE) return
+        if (!disposable?.isDisposed!!) return
+        loadData()
     }
 
     fun clicked(position: Int) {
         if (position > data.size) return
         val item = data[position]
         viewState.goToUrl(item.newsUrl)
+    }
+
+    fun retry() {
+        loadError = false
+        data.removeAll { it.newsType != NewsType.NEWS }
+        loadMore()
     }
 
 }
