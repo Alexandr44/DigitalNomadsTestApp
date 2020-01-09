@@ -53,6 +53,7 @@ class UrlFragment : MvpAppCompatFragment(), UrlView, BackButtonListener {
     }
 
     override fun openUrl(url: String) {
+        url_webview.settings.javaScriptEnabled = true
         url_webview.loadUrl(url)
     }
 
