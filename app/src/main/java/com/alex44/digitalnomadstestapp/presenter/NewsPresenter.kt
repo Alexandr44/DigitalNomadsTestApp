@@ -92,7 +92,7 @@ class NewsPresenter(private val mainThreadScheduler : Scheduler) : MvpPresenter<
 
     fun loadMore() {
         if (loadError) return
-        if (curPage >= MAX_PAGE) return
+        if (curPage > MAX_PAGE) return
         if (!disposable?.isDisposed!!) return
         loadData()
     }
