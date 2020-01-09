@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#5E35B1</color>
     <color name="colorAccent">#43A047</color>
     <color name="colorRvItemBackground">#303F9F</color>
+    <color name="colorRvErrorBackground">#880E4F</color>
 </resources>
